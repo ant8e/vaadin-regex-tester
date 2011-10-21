@@ -24,6 +24,7 @@ import com.vaadin.ui.AbstractTextField.TextChangeEventMode;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
 public class RegExTesterApplication extends com.vaadin.Application {
@@ -33,14 +34,20 @@ public class RegExTesterApplication extends com.vaadin.Application {
 
 	@Override
 	public void init() {
+		setTheme("chameleon");
 		final TextField text = new TextField();
 
 		final TextField regex = new TextField();
 
-		Panel mainPanel = new Panel("Simple Java RegEx Tester ");
-		mainPanel.setWidth("360px");
+		Panel mainPanel = new Panel("Simple Java regular expression tool ");
+		mainPanel.setWidth("460px");
+		VerticalLayout mainPanelLayout = new VerticalLayout();
+		mainPanelLayout.setSpacing(true);
+		mainPanelLayout.setMargin(true);
+		mainPanel.setContent(mainPanelLayout);
 		regex.setCaption("Regular Expression");
-		regex.setWidth("300px");
+		regex.setWidth("400px");
+		regex.addStyleName("big");
 		regex.setInputPrompt("enter a regular expression here");
 		regex.setTextChangeEventMode(TextChangeEventMode.TIMEOUT);
 		regex.setImmediate(true);
@@ -49,10 +56,12 @@ public class RegExTesterApplication extends com.vaadin.Application {
 		text.setInputPrompt("Enter a test string here");
 		text.setTextChangeEventMode(TextChangeEventMode.TIMEOUT);
 		text.setImmediate(true);
-		text.setWidth("300px");
-
+		text.setWidth("400px");
+		text.addStyleName("big");
 		result.setSizeUndefined();
-		result.setWidth("300px");
+		result.setWidth("460px");
+		result.setStyleName("light");
+		result.setVisible(false);
 
 		regex.addListener(new TextChangeListener() {
 			private static final long serialVersionUID = 7783333579512074097L;
@@ -72,24 +81,31 @@ public class RegExTesterApplication extends com.vaadin.Application {
 			}
 		});
 		Window mainWindow = new Window();
+		VerticalLayout mainLayout = new VerticalLayout();
+		mainLayout.setSpacing(true);
+		mainLayout.setMargin(true);
+		mainWindow.setContent(mainLayout);
 		mainWindow.addComponent(mainPanel);
 		mainPanel.addComponent(regex);
 		mainPanel.addComponent(text);
-		mainPanel.addComponent(result);
+		mainWindow.addComponent(result);
 		setMainWindow(mainWindow);
 	}
 
 	private void showResult(String regexValue, String textValue) {
 		Matcher matcher;
 		try {
+			result.setVisible(!"".equals(regexValue));
 			Label match = new Label("no match");
+			match.addStyleName("h2 color");
 			result.removeAllComponents();
 			result.addComponent(match);
 			matcher = Pattern.compile(regexValue).matcher(textValue);
 			if (matcher.matches()) {
 				if (matcher.groupCount() > 0)
 					for (int i = 1; i <= matcher.groupCount(); i++) {
-						Label g = new Label("group " + i + "= " + matcher.group(i));
+						Label g = new Label("group " + i + " = " + matcher.group(i));
+						g.addStyleName("h2 color");
 						g.setSizeUndefined();
 						result.addComponent(g);
 					}
@@ -97,7 +113,9 @@ public class RegExTesterApplication extends com.vaadin.Application {
 			}
 		} catch (Exception e) {
 			result.removeAllComponents();
-			result.addComponent(new Label(e.getMessage()));
+			Label error = new Label(e.getMessage());
+			error.addStyleName("error");
+			result.addComponent(error);
 		}
 	}
 }
