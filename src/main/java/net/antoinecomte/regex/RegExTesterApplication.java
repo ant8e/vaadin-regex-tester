@@ -1,3 +1,18 @@
+/* 
+   Copyright 2011 Antoine Comte
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+ */
 package net.antoinecomte.regex;
 
 import java.util.regex.Matcher;
@@ -13,26 +28,32 @@ import com.vaadin.ui.Window;
 
 public class RegExTesterApplication extends com.vaadin.Application {
 	private static final long serialVersionUID = -6750809342251528767L;
-	private final TextField text = new TextField();;
-	private final TextField regex = new TextField();;
-	private final Label match = new Label("match");
+
+	private final Panel result = new Panel("Result");
 
 	@Override
 	public void init() {
-		Panel l = new Panel("Simple Java RegEx Tester ");
+		final TextField text = new TextField();
+
+		final TextField regex = new TextField();
+
+		Panel mainPanel = new Panel("Simple Java RegEx Tester ");
+		mainPanel.setWidth("360px");
 		regex.setCaption("Regular Expression");
 		regex.setWidth("300px");
 		regex.setInputPrompt("enter a regular expression here");
 		regex.setTextChangeEventMode(TextChangeEventMode.TIMEOUT);
 		regex.setImmediate(true);
 
-		text.setCaption("Text");
-		text.setInputPrompt("Enter a text here");
+		text.setCaption("Test input");
+		text.setInputPrompt("Enter a test string here");
 		text.setTextChangeEventMode(TextChangeEventMode.TIMEOUT);
 		text.setImmediate(true);
 		text.setWidth("300px");
 
-		match.setVisible(false);
+		result.setSizeUndefined();
+		result.setWidth("300px");
+
 		regex.addListener(new TextChangeListener() {
 			private static final long serialVersionUID = 7783333579512074097L;
 
@@ -51,30 +72,32 @@ public class RegExTesterApplication extends com.vaadin.Application {
 			}
 		});
 		Window mainWindow = new Window();
-		mainWindow.addComponent(l);
-		l.addComponent(regex);
-		l.addComponent(text);
-		l.addComponent(match);
+		mainWindow.addComponent(mainPanel);
+		mainPanel.addComponent(regex);
+		mainPanel.addComponent(text);
+		mainPanel.addComponent(result);
 		setMainWindow(mainWindow);
 	}
 
 	private void showResult(String regexValue, String textValue) {
 		Matcher matcher;
 		try {
-			match.setVisible(false);
+			Label match = new Label("no match");
+			result.removeAllComponents();
+			result.addComponent(match);
 			matcher = Pattern.compile(regexValue).matcher(textValue);
 			if (matcher.matches()) {
-				match.setVisible(true);
-				String groups = "";
 				if (matcher.groupCount() > 0)
 					for (int i = 1; i <= matcher.groupCount(); i++) {
-						groups = groups + " group" + i + "=" + matcher.group(i);
+						Label g = new Label("group " + i + "= " + matcher.group(i));
+						g.setSizeUndefined();
+						result.addComponent(g);
 					}
-				match.setValue("match" + groups);
-
+				match.setValue("match");
 			}
 		} catch (Exception e) {
+			result.removeAllComponents();
+			result.addComponent(new Label(e.getMessage()));
 		}
-
 	}
 }
