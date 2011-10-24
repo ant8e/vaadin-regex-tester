@@ -18,6 +18,8 @@ package net.antoinecomte.regex;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.ui.AbstractTextField.TextChangeEventMode;
@@ -100,6 +102,10 @@ public class RegExTesterApplication extends com.vaadin.Application {
 			match.addStyleName("h2 color");
 			result.removeAllComponents();
 			result.addComponent(match);
+			Label javaString = new Label("java string : \""
+					+ StringEscapeUtils.escapeJava(regexValue) + "\"");
+			javaString.addStyleName("small");
+			result.addComponent(javaString);
 			matcher = Pattern.compile(regexValue).matcher(textValue);
 			if (matcher.matches()) {
 				if (matcher.groupCount() > 0)
