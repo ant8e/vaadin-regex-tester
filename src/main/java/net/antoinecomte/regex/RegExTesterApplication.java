@@ -102,21 +102,28 @@ public class RegExTesterApplication extends com.vaadin.Application {
 			match.addStyleName("h3 color");
 			result.removeAllComponents();
 			result.addComponent(match);
-			Label javaString = new Label("java string : \""
-					+ StringEscapeUtils.escapeJava(regexValue) + "\"");
-			javaString.addStyleName("small");
-			result.addComponent(javaString);
 			matcher = Pattern.compile(regexValue).matcher(textValue);
 			if (matcher.matches()) {
 				if (matcher.groupCount() > 0)
 					for (int i = 1; i <= matcher.groupCount(); i++) {
 						Label g = new Label("group " + i + " = " + matcher.group(i));
-						g.addStyleName("h2 color");
+						g.addStyleName("h3 color");
 						g.setSizeUndefined();
 						result.addComponent(g);
 					}
 				match.setValue("match");
 			}
+			matcher.reset();
+			if (matcher.find()) {
+				Label findresult = new Label("find=true, start = " +
+						matcher.start() + " end = " + matcher.end());
+				findresult.addStyleName("h3 color");
+				result.addComponent(findresult);
+			}
+			Label javaString = new Label("java string : \""
+					+ StringEscapeUtils.escapeJava(regexValue) + "\"");
+			javaString.addStyleName("small color");
+			result.addComponent(javaString);
 		} catch (Exception e) {
 			result.removeAllComponents();
 			Label error = new Label(e.getMessage());
