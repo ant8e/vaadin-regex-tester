@@ -99,7 +99,7 @@ public class RegExTesterApplication extends com.vaadin.Application {
 		try {
 			result.setVisible(!"".equals(regexValue));
 			Label match = new Label("no match");
-			match.addStyleName("h2 color");
+			match.addStyleName("h3 color");
 			result.removeAllComponents();
 			result.addComponent(match);
 			Label javaString = new Label("java string : \""
